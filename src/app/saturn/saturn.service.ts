@@ -52,14 +52,21 @@ export class SaturnService implements OnDestroy {
     var radius   = 0.5,
     segments = 32,
     rotation = 6,  
-    angle = 6;
+     counter = 0,
+    angle = Math.PI * (Math.sin(counter) + 1.01) / 2, // avoid negatives
+   increase = Math.PI / 100;
+   counter += increase;
+ 
+  
 
      this.sphere = this.createSphere(radius, segments);
+     this.sphere.rotateZ(THREE.MathUtils.degToRad(26.7));
      this.sphere.rotation.y = rotation; 
      this.scene.add(this.sphere);
      this.rings = this.createRings(radius, segments, angle);
-     this.rings.rotation.y = rotation;
-     this.rings.rotation.x = Math.PI / 4;
+     this.rings.rotation.z = rotation;
+     this.rings.rotateY(THREE.MathUtils.degToRad(89));
+     this.rings.rotateZ(THREE.MathUtils.degToRad(35));
      this.scene.add(this.rings);
      this.clouds = this.createClouds(radius, segments);
      this.clouds.rotation.y = rotation;
@@ -67,7 +74,7 @@ export class SaturnService implements OnDestroy {
 
      this.stars = this.createStars(90, 64);
       this.scene.add(this.stars);
-
+//mesh.geometry.vertices = this.rings.vertices;
     /*const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
     this.cube = new THREE.Mesh( geometry, material );
@@ -79,9 +86,10 @@ export class SaturnService implements OnDestroy {
     this.frameId = requestAnimationFrame(() => {
       this.render();
     });
+ 
     this.sphere.rotation.y += 0.0005;
     this.clouds.rotation.y += 0.0005;  
-    this.rings.rotation.y += 0.005;
+    this.rings.rotation.z += 0.005;
 
     //this.cube.rotation.x += 0.01;
    // this.cube.rotation.y += 0.01;
@@ -143,7 +151,7 @@ export class SaturnService implements OnDestroy {
 
   createRings(radius, segments, angle) {
     return new THREE.Mesh(
-      new THREE.RingGeometry(radius+0.056, radius+0.663, segments-2, segments-26, angle),
+      new THREE.RingGeometry(radius+0.056, radius+0.663, segments-2, segments-26),
       new THREE.MeshPhongMaterial({
         map: THREE.ImageUtils.loadTexture('assets/images/saturnringcolor.jpg'),
         specularMap: THREE.ImageUtils.loadTexture('assets/images/saturnringpattern.jpg'),
